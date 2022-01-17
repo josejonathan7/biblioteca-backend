@@ -3,7 +3,7 @@
  * https://jestjs.io/docs/configuration
  */
 
-export default {
+module.exports = {
 	bail: true,
 	clearMocks: true,
 	collectCoverage: true,
@@ -16,5 +16,11 @@ export default {
 	coveragePathIgnorePatterns: [
 		"./node_modules"
 	],
-	preset: "ts-jest"
+	preset: "ts-jest",
+	testMatch: [
+		"**/__tests__/**/*.test.ts",
+	],
+	transform: {
+		"^.+\\.ts?$": "ts-jest",
+	},
 };

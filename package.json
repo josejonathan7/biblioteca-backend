@@ -20,10 +20,14 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "express": "^4.17.2"
+    "dotenv": "^13.0.1",
+    "express": "^4.17.2",
+    "sqlite3": "^5.0.2",
+    "typeorm": "^0.2.41"
   },
   "scripts": {
     "dev": "ts-node-dev --respawn  src/server.ts",
-    "test": "jest --verbose --ruinInBand"
+    "test": "NODE_ENV=test jest --verbose --ruinInBand",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js"
   }
 }
