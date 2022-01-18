@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
-export default class WorksWriters {
+export default class WorksWritersController {
 
 	async getWorks(request: Request, response: Response) {
-        
+
 	}
-} 
+}

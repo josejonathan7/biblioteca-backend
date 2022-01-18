@@ -1,7 +1,7 @@
 import {Router} from "express";
-import WorksWriters from "./controllers/WorksWriters";
+import WorksWritersController from "./controllers/WorksWritersController";
 
-const worksWriters = new WorksWriters();
+const worksWriters = new WorksWritersController();
 
 const routes = Router();
 

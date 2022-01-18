@@ -28,6 +28,6 @@ export default class WorkEntity {
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	@ManyToOne(type => AuthorEntity, works => WorkEntity, {eager: true})
-		author!: AuthorEntity[];
+		author!: AuthorEntity;
 
 }

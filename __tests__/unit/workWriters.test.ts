@@ -1,13 +1,33 @@
-import { describe, expect, it } from "@jest/globals";
-
-
+import { describe, expect, it, beforeEach } from "@jest/globals";
+import faker from "@faker-js/faker";
+import WorkWriteService from "../../src/services/WorksWritesServices";
 
 describe("#Unitary test", () => {
+	let data: {
+		title: string,
+		publishingCompany: string,
+		image: string,
+		author: string
+	};
+	let workWriteService: WorkWriteService;
 
-	it("#Get all products", async () => {
-		console.log("ola");
+	beforeEach(() => {
+		data = {
+			title: faker.name.title(),
+			publishingCompany: faker.company.companyName(),
+			image: faker.image.abstract(),
+			author: faker.name.firstName()
+		};
+	});
 
-		expect(2+2).toBe(4);
+	beforeAll(() => {
+		workWriteService = new WorkWriteService();
+	});
+
+	it("#create Work", async () => {
+		const created = await workWriteService.createWork(data);
+
+		expect(created).toMatchObject({...data});
 	});
 
 });

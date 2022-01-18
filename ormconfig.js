@@ -5,9 +5,8 @@ dotenv.config({
 	path: process.env.NODE_ENV === "test" ? ".env.test" : ".env"
 });
 
-console.log(process.env.DATABASE_PATH);
-
 module.exports = {
+	"name": "sqliteDb",
 	"type": "sqlite",
 	"database": process.env.DATABASE_PATH,
 	"entities": ["./src/entitys/*.ts"],

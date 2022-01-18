@@ -6,7 +6,7 @@
 module.exports = {
 	bail: true,
 	clearMocks: true,
-	collectCoverage: true,
+	collectCoverage: false,
 	coverageDirectory: "__tests__/coverage",
 	coverageProvider: "v8",
 	collectCoverageFrom: [
