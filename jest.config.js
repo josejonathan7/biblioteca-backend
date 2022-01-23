@@ -6,12 +6,14 @@
 module.exports = {
 	bail: true,
 	clearMocks: true,
-	collectCoverage: false,
+	collectCoverage: true,
 	coverageDirectory: "__tests__/coverage",
 	coverageProvider: "v8",
 	collectCoverageFrom: [
 		"src/**",
-		"!src/server.ts"
+		"!src/server.ts",
+		"!src/@types/*.ts",
+		"!src/database/**"
 	],
 	coveragePathIgnorePatterns: [
 		"./node_modules"
@@ -19,6 +21,7 @@ module.exports = {
 	preset: "ts-jest",
 	testMatch: [
 		"**/__tests__/**/*.test.ts",
+		//"!**/__tests__/unit/**.test.ts"
 	],
 	transform: {
 		"^.+\\.ts?$": "ts-jest",
