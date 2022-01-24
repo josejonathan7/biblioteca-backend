@@ -29,9 +29,13 @@
     "typeorm": "^0.2.41"
   },
   "scripts": {
+	"prestart": "NODE_ENV=production yarn typeorm -c sqliteDb migration:run",
+	"start": "NODE_ENV=production node dist/server.js",
+	"predev": "yarn typeorm -c sqliteDb migration:run",
     "dev": "ts-node-dev --respawn  src/server.ts",
+	"pretest": "NODE_ENV=test yarn typeorm -c sqliteDb migration:run",
     "test": "NODE_ENV=test jest --verbose --runInBand",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js",
-	"build": "yarn tsc"
+	"build": "yarn tsc -p tsconfig.build.json"
   }
 }

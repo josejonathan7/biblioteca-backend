@@ -1,9 +1,10 @@
-import { describe, it, expect, beforeEach, afterEach } from "@jest/globals";
+import { describe, it, expect, beforeEach, afterEach, afterAll } from "@jest/globals";
 import faker from "@faker-js/faker";
 import request from "supertest";
 import app from "../../src/app";
 import { getCustomRepository } from "typeorm";
 import WorkRepositorie from "../../src/repositories/workREpositorie";
+import AuthorRepositorie from "../../src/repositories/authorRepositorie";
 
 describe("#Integration tests", () => {
 	let data: {
@@ -13,7 +14,7 @@ describe("#Integration tests", () => {
 		author: string
 	};
 
-	beforeEach(() => {
+	beforeEach(async () => {
 		data = {
 			title: faker.name.title().toLowerCase(),
 			publishingCompany: faker.company.companyName().toLowerCase(),
@@ -24,8 +25,12 @@ describe("#Integration tests", () => {
 
 	afterEach(async () => {
 		const workWriteRepositorie = getCustomRepository(WorkRepositorie, "sqliteDb");
-
 		await workWriteRepositorie.delete({});
+	});
+
+	afterAll(async() => {
+		const authorRepositorie = getCustomRepository(AuthorRepositorie, "sqliteDb");
+		await authorRepositorie.delete({});
 	});
 
 	it("->Should create work end point", async () => {

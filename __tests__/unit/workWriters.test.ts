@@ -1,8 +1,9 @@
-import { describe, expect, it, beforeEach } from "@jest/globals";
+import { describe, expect, it, beforeEach, beforeAll, afterAll, afterEach } from "@jest/globals";
 import faker from "@faker-js/faker";
 import WorkWriteService from "../../src/services/WorksWritesServices";
 import { getCustomRepository } from "typeorm";
 import WorkRepositorie from "../../src/repositories/workREpositorie";
+import AuthorRepositorie from "../../src/repositories/authorRepositorie";
 
 describe("#Unitary test", () => {
 	let data: {
@@ -24,6 +25,11 @@ describe("#Unitary test", () => {
 
 	beforeAll(() => {
 		workWriteService = new WorkWriteService();
+	});
+
+	afterAll(async() => {
+		const authorRepositorie = getCustomRepository(AuthorRepositorie, "sqliteDb");
+		await authorRepositorie.delete({});
 	});
 
 	afterEach(async () => {
