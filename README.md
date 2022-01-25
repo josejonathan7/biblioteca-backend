@@ -16,11 +16,12 @@
 
 ## Índice
 
-* [Devchallenge](#devchallenge) 
+* [Devchallenge](#devchallenge)
 * [Desafio](#desafio)
 * [Techs](#techs)
 * [Como começar](#como-começar)
 * [Compartilhe](#compartilhe)
+* [Executando o cluster](#cluster-Kubernete)
 
 # Devchallenge
 <a href="https://devchallenge.now.sh/"> DevChallenge</a> permite que você evolua suas skills como programador! Participe da nossa <a href="https://discord.gg/yvYXhGj">comunidade</a> o/
@@ -36,7 +37,7 @@ Seu desafio é criar o backend para um sistema de gerenciamento de uma bibliotec
 <b>[DELETE] </b> /obras/:id: : A rota deverá deletar a obra com o id presente nos parâmetros da rota<br>
 
 
-# Techs: 
+# Techs:
 - Tecnologia que preferir :)
 
 # Como começar:
@@ -59,4 +60,19 @@ Discord: https://discord.gg/yvYXhGj <br>
 Linkedin: https://www.linkedin.com/company/devchallenge/<br>
 Twitter: https://twitter.com/dev_challenge<br>
 Instagram: https://www.instagram.com/devchallenge/<br>
+
+# Cluster Kubernete
+Para criar o cluster kubernete com o k3d basta executar
+
+`k3d cluster create nomeCluster --agents 1 --servers 1 -p "3000:30000@loadbalancer"`
+
+e para fazer o deploy do projeto na raiz do projeto executar
+
+`kubectl apply -f k8s/deployment.yaml`
+
+depois disso é só aguarda o tempo de criação e execução do container e o cluster vai estar funcionando na porta 3000
+
+Obs: para saber quando a aplicação vai estar rodando basta executar:
+
+`watch "kubectl get all"`
 
