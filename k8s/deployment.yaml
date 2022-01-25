@@ -1,0 +1,41 @@
+#Deployment
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: biblioteca-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: biblioteca-backend
+  template:
+    metadata:
+      labels:
+        app: biblioteca-backend
+    spec:
+      containers:
+        - name: biblioteca-backend
+          image: josejonathan/biblioteca-backend:latest
+          ports:
+            - containerPort: 3000
+
+
+---
+#API
+apiVersion: v1
+
+kind: Service
+
+metadata:
+  name: biblioteca-backend
+spec:
+  selector:
+    app: biblioteca-backend
+  ports:
+  - port: 3000
+    targetPort: 3000
+    nodePort: 30000
+  type: NodePort
+
