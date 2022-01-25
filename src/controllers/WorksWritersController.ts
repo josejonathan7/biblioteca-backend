@@ -5,7 +5,7 @@ interface IRequestType {
 	title: string;
 	publishingCompany: string;
 	image: string;
-	author: string;
+	author: string[];
 }
 
 export default class WorksWritersController {
@@ -31,15 +31,21 @@ export default class WorksWritersController {
 		title = title.trim().toLowerCase();
 		publishingCompany = publishingCompany.trim().toLowerCase();
 		image = image.trim().toLowerCase();
-		author = author.trim().toLowerCase();
+		author = author.map(author => author.trim().toLowerCase());
 
 		const worksWritesService = new WorksWritesService();
 
 		try {
 
-			if(title === "" || publishingCompany === "" || image === "" || author === "") {
+			if(title === "" || publishingCompany === "" || image === "") {
 				throw new Error("All fields must be filled");
 			}
+
+			author.forEach(author => {
+				if(author === ""){
+					throw new Error("All fields must be filled");
+				}
+			});
 
 			const createdWork = await worksWritesService.createWork({title, publishingCompany, image, author});
 
@@ -61,7 +67,7 @@ export default class WorksWritersController {
 		title = title.trim().toLowerCase();
 		publishingCompany = publishingCompany.trim().toLowerCase();
 		image = image.trim().toLowerCase();
-		author = author.trim().toLowerCase();
+		author = author.map(author => author.trim().toLowerCase());
 
 		const worksWritesService = new WorksWritesService();
 
@@ -71,9 +77,15 @@ export default class WorksWritersController {
 				throw new Error("Id for update with length inválid");
 			}
 
-			if(title === "" || publishingCompany === "" || image === "" || author === ""){
+			if(title === "" || publishingCompany === "" || image === ""){
 				throw new Error("Empty data for update");
 			}
+
+			author.forEach(author => {
+				if(author === ""){
+					throw new Error("Empty author for update");
+				}
+			});
 
 			await worksWritesService.updateWork({title, publishingCompany, image, author}, id);
 

@@ -8,11 +8,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var WorkEntity_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const authorEntity_1 = __importDefault(require("./authorEntity"));
-let WorkEntity = WorkEntity_1 = class WorkEntity {
+let WorkEntity = class WorkEntity {
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)("uuid")
@@ -35,9 +34,10 @@ __decorate([
     })
 ], WorkEntity.prototype, "image", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(type => authorEntity_1.default, works => WorkEntity_1, { eager: true })
+    (0, typeorm_1.ManyToMany)(() => authorEntity_1.default, author => author, { cascade: true }),
+    (0, typeorm_1.JoinTable)()
 ], WorkEntity.prototype, "author", void 0);
-WorkEntity = WorkEntity_1 = __decorate([
+WorkEntity = __decorate([
     (0, typeorm_1.Entity)("tb_obras")
 ], WorkEntity);
 exports.default = WorkEntity;

@@ -7,7 +7,7 @@ interface Work {
 	title?: string,
 	publishingCompany?: string,
 	image?: string,
-	author: string
+	author: string[]
 }
 
 export default class WorksWritesService {
@@ -35,24 +35,32 @@ export default class WorksWritesService {
 			throw new Error("The Work image already exist");
 		}
 
-		const authorExists = await authorRepositorie.find({where: {name: author}});
+		const authorIdArrayEmpty = [];
+		for await (const name of author) {
+			const authorExists = await authorRepositorie.find({where: {name}});
 
-		if(authorExists.length < 1) {
-			await authorRepositorie.save({
-				name: author
-			});
+			if(authorExists.length < 1) {
+				await authorRepositorie.save({
+					name
+				});
+			}
+
+			const authorId = await authorRepositorie.find({where: {name}});
+
+			authorIdArrayEmpty.push(instanceToPlain(authorId));
 		}
 
-		const authorFind = await authorRepositorie.find({where: {name: author}});
-		const authorId = instanceToPlain(authorFind);
+		const AuthorIdArrayFull = authorIdArrayEmpty.flat().map(item => {
+			return {
+				id: item.id
+			};
+		});
 
 		const saveWork = workRepositorie.create({
 			title,
 			publishingCompany,
 			image,
-			author: {
-				id: authorId[0].id
-			}
+			author: AuthorIdArrayFull
 
 		});
 
@@ -64,46 +72,72 @@ export default class WorksWritesService {
 	async getAll() {
 		const workWriteRepositorie = await this.connection.then(con => con.getCustomRepository(WorkRepositorie));
 
-		const worksFind = await workWriteRepositorie.find();
+		const worksFind = await workWriteRepositorie.find({relations: ["author"]});
 
 		if(worksFind.length < 1) {
 			throw new Error("Works not found");
 		}
 
-		return instanceToPlain(worksFind);
+		const filter = worksFind.map(item => {
+			const data = {
+				id: item.id,
+				title: item.title,
+				publishingCompany: item.publishingCompany,
+				image: item.image,
+				author: instanceToPlain(item.author)
+
+			};
+
+			return data;
+		});
+
+		return filter;
 	}
 
 	async updateWork({title, publishingCompany, image, author}: Work, id: string){
 		const workRepositorie = await this.connection.then(con => con.getCustomRepository(WorkRepositorie));
 		const authorRepositorie = await this.connection.then(con => con.getCustomRepository(AuthorRepositorie));
 
-		const authorExists = await authorRepositorie.find({where: {name: author}});
+		const authorIdArrayEmpty = [];
+		for await (const name of author) {
+			const authorExists = await authorRepositorie.find({where: {name}});
 
-		if(authorExists.length < 1) {
-			await authorRepositorie.save({
-				name: author
-			});
+			if(authorExists.length < 1) {
+				await authorRepositorie.save({
+					name
+				});
+			}
+
+			const authorId = await authorRepositorie.find({where: {name}});
+
+			authorIdArrayEmpty.push(instanceToPlain(authorId));
 		}
 
-		const authorFind = await authorRepositorie.find({where: {name: author}});
-		const authorId = instanceToPlain(authorFind);
+		const authorIdArrayFull = authorIdArrayEmpty.flat().map(item => {
+			return {
+				id: item.id
+			};
+		});
 
-		const updatedWork = await workRepositorie.update(id, {
+		const workExist = await workRepositorie.find({id});
+
+		if(workExist.length < 1) {
+			throw new Error("Work not found by update, please create work");
+		}
+
+		const updatedWork = await workRepositorie.save({
+			id,
 			title,
 			publishingCompany,
 			image,
-			author: {
-				id: authorId[0].id
-			}
+			author: authorIdArrayFull
 		});
 
-		const affected: number = updatedWork.affected ? updatedWork.affected : 0;
-
-		if(affected < 1) {
+		if(!updatedWork) {
 			throw new Error("Update failed");
 		}
 
-		return updatedWork.affected;
+		return true;
 	}
 
 	async deleteWork(id: string) {
@@ -126,25 +160,3 @@ export default class WorksWritesService {
 		return connection;
 	}
 }
-
-
-/*const authorIdArrayEmpty = [];
-		for await (const name of author) {
-			const authorExists = await authorRepositorie.find({where: {name}});
-
-			if(authorExists.length < 1) {
-				await authorRepositorie.save({
-					name
-				});
-			}
-
-			const authorId = await authorRepositorie.find({where: {name}});
-
-			authorIdArrayEmpty.push(instanceToPlain(authorId));
-		}
-
-		const AuthorIdArrayFull = authorIdArrayEmpty.flat().map(item => {
-			return {
-				id: item.id
-			};
-		});*/

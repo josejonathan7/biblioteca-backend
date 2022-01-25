@@ -11,15 +11,15 @@ describe("#Integration tests", () => {
 		title: string,
 		publishingCompany: string,
 		image: string,
-		author: string
+		author: string[]
 	};
 
-	beforeEach(async () => {
+	beforeEach(() => {
 		data = {
 			title: faker.name.title().toLowerCase(),
 			publishingCompany: faker.company.companyName().toLowerCase(),
 			image: faker.image.abstract(),
-			author: faker.name.firstName()
+			author: [faker.name.firstName(), faker.name.firstName(), faker.name.firstName()]
 		};
 	});
 
@@ -52,6 +52,15 @@ describe("#Integration tests", () => {
 		await request(app).post("/obras").send(dataEmpty).expect(400, { message: "All fields must be filled"});
 	});
 
+	it("->Should not create with empty author", async () => {
+		const dataEmpty = {
+			...data,
+			author: [""]
+		};
+
+		await request(app).post("/obras").send(dataEmpty).expect(400, { message: "All fields must be filled"});
+	});
+
 	it("->Should get router end point", async() => {
 		await request(app).post("/obras").send(data);
 
@@ -73,7 +82,7 @@ describe("#Integration tests", () => {
 			title: faker.name.title().toLowerCase(),
 			publishingCompany: faker.company.companyName().toLowerCase(),
 			image: faker.image.abstract(),
-			author: faker.name.firstName()
+			author: [faker.name.firstName()]
 		};
 
 		const updatedWork = await request(app).put(`/obras/${id}`).send(updateData);
@@ -99,6 +108,17 @@ describe("#Integration tests", () => {
 		await request(app).put(`/obras/${id}`).send(dataEmpty).expect(400, { message: "Empty data for update" });
 	});
 
+	it("->Should not update with empty data in body request", async() => {
+		const dataEmpty = {
+			...data,
+			author: ["asd", ""]
+		};
+
+		const id = "aaaaaaaqaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
+		await request(app).put(`/obras/${id}`).send(dataEmpty).expect(400, { message: "Empty author for update" });
+	});
+
 	it("->Should delete router end point", async () => {
 		const createWork = await request(app).post("/obras/").send(data);
 
@@ -115,5 +135,4 @@ describe("#Integration tests", () => {
 
 		await request(app).delete(`/obras/${id}`).expect(400, { message: "Id for update with length inválid"});
 	});
-
 });

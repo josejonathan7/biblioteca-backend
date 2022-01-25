@@ -10,7 +10,7 @@ describe("#Unitary test", () => {
 		title: string,
 		publishingCompany: string,
 		image: string,
-		author: string
+		author: string[]
 	};
 	let workWriteService: WorkWriteService;
 
@@ -18,8 +18,8 @@ describe("#Unitary test", () => {
 		data = {
 			title: faker.name.title(),
 			publishingCompany: faker.company.companyName(),
-			image: faker.image.abstract(),
-			author: faker.name.firstName()
+			image: faker.image.imageUrl(),
+			author: [faker.name.firstName(), faker.name.firstName(), faker.name.firstName()]
 		};
 	});
 
@@ -27,15 +27,16 @@ describe("#Unitary test", () => {
 		workWriteService = new WorkWriteService();
 	});
 
-	afterAll(async() => {
-		const authorRepositorie = getCustomRepository(AuthorRepositorie, "sqliteDb");
-		await authorRepositorie.delete({});
-	});
-
 	afterEach(async () => {
 		const workWriteRepositorie = getCustomRepository(WorkRepositorie, "sqliteDb");
 
 		await workWriteRepositorie.delete({});
+	});
+
+	afterAll(async () => {
+		const authorRepositorie = getCustomRepository(AuthorRepositorie, "sqliteDb");
+
+		await authorRepositorie.delete({});
 	});
 
 	it("->Should create Work", async () => {
@@ -98,7 +99,7 @@ describe("#Unitary test", () => {
 			title: faker.name.title(),
 			publishingCompany: faker.company.companyName(),
 			image: faker.image.avatar(),
-			author: faker.name.firstName()
+			author: [faker.name.firstName(), faker.name.firstName()]
 		};
 
 		await workWriteService.createWork(dataTwo);
@@ -129,7 +130,7 @@ describe("#Unitary test", () => {
 			title: faker.name.title(),
 			publishingCompany: faker.company.companyName(),
 			image: faker.image.abstract(),
-			author: faker.name.firstName()
+			author: [faker.name.firstName(), faker.name.firstName(), faker.name.firstName()]
 		};
 
 		const updatedWork = await workWriteService.updateWork(updateObject, id);
@@ -146,13 +147,13 @@ describe("#Unitary test", () => {
 			title: faker.name.title(),
 			publishingCompany: faker.company.companyName(),
 			image: faker.image.abstract(),
-			author: faker.name.firstName()
+			author: [faker.name.firstName()]
 		};
 		try {
 			await workWriteService.updateWork(updateObject, id);
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
-			expect(error.message).toBe("Update failed");
+			expect(error.message).toBe("Work not found by update, please create work");
 		}
 	});
 
@@ -169,7 +170,7 @@ describe("#Unitary test", () => {
 	it("->Should not delete with incorrect Id", async () => {
 		await workWriteService.createWork(data);
 
-		const id = "dasdasdasdasdasdas";
+		const id = "dasdasdasdasdasdasdddddddddddddddddd";
 
 		try {
 			await workWriteService.deleteWork(id);

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import AuthorEntity from "./authorEntity";
 
 
@@ -27,7 +27,7 @@ export default class WorkEntity {
 		image!: string;
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	@ManyToOne(type => AuthorEntity, works => WorkEntity, {eager: true})
-		author!: AuthorEntity;
-
+	@ManyToMany(() => AuthorEntity, author => author, {cascade: true})
+	@JoinTable()
+		author!: AuthorEntity[];
 }

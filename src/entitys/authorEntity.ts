@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import WorkEntity from "./workEntity";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("tb_autores")
 export default class AuthorEntity {
@@ -12,9 +11,4 @@ export default class AuthorEntity {
 		type: "text"
 	})
 		name!: string;
-
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	@OneToMany(type => WorkEntity, author => AuthorEntity)
-		works!: WorkEntity[];
 }

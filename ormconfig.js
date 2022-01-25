@@ -12,5 +12,6 @@ module.exports = {
 	"cli": {
 		"entitiesDir": "./src/entitys",
 		"migrationsDir": "./src/database/migrations"
-	}
+	},
+	"synchronize": false
 };

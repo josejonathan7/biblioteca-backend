@@ -21,12 +21,17 @@ class WorksWritersController {
         title = title.trim().toLowerCase();
         publishingCompany = publishingCompany.trim().toLowerCase();
         image = image.trim().toLowerCase();
-        author = author.trim().toLowerCase();
+        author = author.map(author => author.trim().toLowerCase());
         const worksWritesService = new WorksWritesServices_1.default();
         try {
-            if (title === "" || publishingCompany === "" || image === "" || author === "") {
+            if (title === "" || publishingCompany === "" || image === "") {
                 throw new Error("All fields must be filled");
             }
+            author.forEach(author => {
+                if (author === "") {
+                    throw new Error("All fields must be filled");
+                }
+            });
             const createdWork = await worksWritesService.createWork({ title, publishingCompany, image, author });
             return response.status(201).json({ data: createdWork });
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,15 +46,20 @@ class WorksWritersController {
         title = title.trim().toLowerCase();
         publishingCompany = publishingCompany.trim().toLowerCase();
         image = image.trim().toLowerCase();
-        author = author.trim().toLowerCase();
+        author = author.map(author => author.trim().toLowerCase());
         const worksWritesService = new WorksWritesServices_1.default();
         try {
             if (id === "" || id.length < 36) {
                 throw new Error("Id for update with length inválid");
             }
-            if (title === "" || publishingCompany === "" || image === "" || author === "") {
+            if (title === "" || publishingCompany === "" || image === "") {
                 throw new Error("Empty data for update");
             }
+            author.forEach(author => {
+                if (author === "") {
+                    throw new Error("Empty author for update");
+                }
+            });
             await worksWritesService.updateWork({ title, publishingCompany, image, author }, id);
             return response.status(200).send("updated with success");
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

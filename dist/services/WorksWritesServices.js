@@ -22,57 +22,83 @@ class WorksWritesService {
         if (imageExist.length > 0) {
             throw new Error("The Work image already exist");
         }
-        const authorExists = await authorRepositorie.find({ where: { name: author } });
-        if (authorExists.length < 1) {
-            await authorRepositorie.save({
-                name: author
-            });
+        const authorIdArrayEmpty = [];
+        for await (const name of author) {
+            const authorExists = await authorRepositorie.find({ where: { name } });
+            if (authorExists.length < 1) {
+                await authorRepositorie.save({
+                    name
+                });
+            }
+            const authorId = await authorRepositorie.find({ where: { name } });
+            authorIdArrayEmpty.push((0, class_transformer_1.instanceToPlain)(authorId));
         }
-        const authorFind = await authorRepositorie.find({ where: { name: author } });
-        const authorId = (0, class_transformer_1.instanceToPlain)(authorFind);
+        const AuthorIdArrayFull = authorIdArrayEmpty.flat().map(item => {
+            return {
+                id: item.id
+            };
+        });
         const saveWork = workRepositorie.create({
             title,
             publishingCompany,
             image,
-            author: {
-                id: authorId[0].id
-            }
+            author: AuthorIdArrayFull
         });
         const createdWork = await workRepositorie.save(saveWork);
         return (0, class_transformer_1.instanceToPlain)(createdWork);
     }
     async getAll() {
         const workWriteRepositorie = await this.connection.then(con => con.getCustomRepository(workREpositorie_1.default));
-        const worksFind = await workWriteRepositorie.find();
+        const worksFind = await workWriteRepositorie.find({ relations: ["author"] });
         if (worksFind.length < 1) {
             throw new Error("Works not found");
         }
-        return (0, class_transformer_1.instanceToPlain)(worksFind);
+        const filter = worksFind.map(item => {
+            const data = {
+                id: item.id,
+                title: item.title,
+                publishingCompany: item.publishingCompany,
+                image: item.image,
+                author: (0, class_transformer_1.instanceToPlain)(item.author)
+            };
+            return data;
+        });
+        return filter;
     }
     async updateWork({ title, publishingCompany, image, author }, id) {
         const workRepositorie = await this.connection.then(con => con.getCustomRepository(workREpositorie_1.default));
         const authorRepositorie = await this.connection.then(con => con.getCustomRepository(authorRepositorie_1.default));
-        const authorExists = await authorRepositorie.find({ where: { name: author } });
-        if (authorExists.length < 1) {
-            await authorRepositorie.save({
-                name: author
-            });
+        const authorIdArrayEmpty = [];
+        for await (const name of author) {
+            const authorExists = await authorRepositorie.find({ where: { name } });
+            if (authorExists.length < 1) {
+                await authorRepositorie.save({
+                    name
+                });
+            }
+            const authorId = await authorRepositorie.find({ where: { name } });
+            authorIdArrayEmpty.push((0, class_transformer_1.instanceToPlain)(authorId));
         }
-        const authorFind = await authorRepositorie.find({ where: { name: author } });
-        const authorId = (0, class_transformer_1.instanceToPlain)(authorFind);
-        const updatedWork = await workRepositorie.update(id, {
+        const authorIdArrayFull = authorIdArrayEmpty.flat().map(item => {
+            return {
+                id: item.id
+            };
+        });
+        const workExist = await workRepositorie.find({ id });
+        if (workExist.length < 1) {
+            throw new Error("Work not found by update, please create work");
+        }
+        const updatedWork = await workRepositorie.save({
+            id,
             title,
             publishingCompany,
             image,
-            author: {
-                id: authorId[0].id
-            }
+            author: authorIdArrayFull
         });
-        const affected = updatedWork.affected ? updatedWork.affected : 0;
-        if (affected < 1) {
+        if (!updatedWork) {
             throw new Error("Update failed");
         }
-        return updatedWork.affected;
+        return true;
     }
     async deleteWork(id) {
         const workRepositorie = await this.connection.then(con => con.getCustomRepository(workREpositorie_1.default));
@@ -89,23 +115,3 @@ class WorksWritesService {
     }
 }
 exports.default = WorksWritesService;
-/*const authorIdArrayEmpty = [];
-        for await (const name of author) {
-            const authorExists = await authorRepositorie.find({where: {name}});
-
-            if(authorExists.length < 1) {
-                await authorRepositorie.save({
-                    name
-                });
-            }
-
-            const authorId = await authorRepositorie.find({where: {name}});
-
-            authorIdArrayEmpty.push(instanceToPlain(authorId));
-        }
-
-        const AuthorIdArrayFull = authorIdArrayEmpty.flat().map(item => {
-            return {
-                id: item.id
-            };
-        });*/

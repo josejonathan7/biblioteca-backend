@@ -7,7 +7,7 @@ module.exports = {
 	preset: "ts-jest",
 	bail: true,
 	clearMocks: true,
-	collectCoverage: false,
+	collectCoverage: true,
 	coverageDirectory: "__tests__/coverage",
 	coverageProvider: "v8",
 	collectCoverageFrom: [
@@ -22,6 +22,7 @@ module.exports = {
 	testMatch: [
 		"**/__tests__/**/*.test.ts",
 		//"!**/__tests__/unit/**.test.ts"
+		//"!**/__tests__/integration/**.test.ts"
 	],
 	transform: {
 		"^.+\\.ts?$": "ts-jest",
